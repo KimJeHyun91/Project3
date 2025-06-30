@@ -1,0 +1,47 @@
+# Flutter & Dart
+# ----------------------------------------------------------------
+
+# IDE/에디터 설정 파일
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Dart & Pub 관련 파일
+.dart_tool/
+.packages
+pubspec.lock # 아래 'pubspec.lock'에 대한 설명을 꼭 확인하세요!
+
+# 빌드 결과물
+build/
+
+# 생성된 코드 (Code Generation) - 필요한 경우 예외 처리
+*.g.dart
+*.freezed.dart
+
+# 플랫폼별 파일
+# Android
+/android/key.properties
+/android/local.properties
+/android/.gradle/
+/android/app/build/
+/android/app/release/
+/android/app/profile/
+
+# iOS
+/ios/Pods/
+/ios/Flutter/App.framework
+/ios/Flutter/engine
+/ios/Flutter/flutter_assets
+/ios/Flutter/Generated.xcconfig
+/ios/.symlinks/
+/ios/Runner/GeneratedPluginRegistrant.h
+/ios/Runner/GeneratedPluginRegistrant.m
+/ios/Runner.xcworkspace/
+/ios/Runner.xcodeproj/project.xcworkspace/
+/ios/Runner.xcodeproj/xcuserdata/
+
+# 운영체제 생성 파일
+.DS_Store
+Thumbs.db
