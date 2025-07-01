@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../services/auth_service.dart';
 import '../home/home_screen.dart';
+import '../auth/role_selection_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   final AuthService _authService = AuthService();
@@ -15,10 +16,7 @@ class LoginScreen extends StatelessWidget {
           onPressed: () async {
             final user = await _authService.signInWithGoogle();
             if (user != null && context.mounted) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => HomeScreen(user: user)),
-              );
+              Navigator.pushReplacementNamed(context, '/select-role');
             }
           },
         ),
