@@ -3,12 +3,14 @@ class AppUser {
   final String email;
   final String? displayName;
   final String? photoUrl;
+  final String? role;
 
   AppUser({
     required this.uid,
     required this.email,
     this.displayName,
     this.photoUrl,
+    this.role,
   });
 
   Map<String, dynamic> toMap() {
@@ -17,6 +19,7 @@ class AppUser {
       'email': email,
       'displayName': displayName,
       'photoUrl': photoUrl,
+      'role': role,
     };
   }
 
@@ -26,6 +29,7 @@ class AppUser {
       email: map['email'],
       displayName: map['displayName'],
       photoUrl: map['photoUrl'],
+      role: map['role'], // ← 추가
     );
   }
 }
