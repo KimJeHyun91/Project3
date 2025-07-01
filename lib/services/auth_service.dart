@@ -1,0 +1,42 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import '../models/user_model.dart';
+
+class AuthService {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+
+  Future<AppUser?> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) return null;
+
+      final googleAuth = await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential = await _auth.signInWithCredential(credential);
+      final user = userCredential.user!;
+      final appUser = AppUser(
+        uid: user.uid,
+        email: user.email!,
+        displayName: user.displayName,
+        photoUrl: user.photoURL,
+      );
+
+      await _db.collection('users').doc(user.uid).set(appUser.toMap(), SetOptions(merge: true));
+      return appUser;
+    } catch (e) {
+      print('❗ 로그인 중 오류 발생: $e');
+      return null;
+    }
+  }
+
+  Future<void> signOut() async {
+    await GoogleSignIn().signOut();
+    await _auth.signOut();
+  }
+}
