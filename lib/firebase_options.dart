@@ -65,4 +65,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'project3-a4d8f.firebasestorage.app',
     iosBundleId: 'com.example.project3',
   );
+
 }
