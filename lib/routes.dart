@@ -25,6 +25,19 @@ final Map<String, RouteFactory> appRoutes = {
       return _errorRoute('사용자 정보가 누락되었습니다.');
     }
     return MaterialPageRoute(builder: (_) => HomeScreen(user: args));
+// final Map<String, WidgetBuilder> appRoutes = {
+//   '/login': (context) => LoginScreen(),
+//   '/select-role': (context) => const RoleSelectionScreen(),
+  // '/home': (context) {
+  //   final args = ModalRoute.of(context)!.settings.arguments as AppUser;
+  //   return HomeScreen(user: args);
+  // },
+  // '/driver-home': (context) => const DriverHomeScreen(),
+  // '/request': (context) => const RequestScreen(),
+  // '/requestList': (context) => const RequestListScreen(),
+  // '/request-detail': (context) {
+  //   final requestId = ModalRoute.of(context)!.settings.arguments as String;
+  //   return RequestDetailScreen(requestId: requestId);
   },
 
   '/driver-home': (settings) {
