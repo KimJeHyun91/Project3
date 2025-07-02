@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../services/auth_service.dart';
-import '../home/home_screen.dart';
-import '../auth/role_selection_screen.dart';
+import '../../models/user_model.dart';
 
 class LoginScreen extends StatelessWidget {
   final AuthService _authService = AuthService();
+
+  LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,15 +14,36 @@ class LoginScreen extends StatelessWidget {
       body: Center(
         child: ElevatedButton.icon(
           icon: Image.asset("assets/google_logo.png", height: 24),
-          label: Text("Google 로그인"),
+          label: const Text("Google 로그인"),
           onPressed: () async {
-            final user = await _authService.signInWithGoogle();
-            if (user != null && context.mounted) {
-              Navigator.pushReplacementNamed(context, '/select-role');
+            final appUser = await _authService.signInWithGoogle();
+            if (appUser != null && context.mounted) {
+              _handleLoginAfterAuth(context, appUser);
             }
           },
         ),
       ),
     );
+  }
+
+  Future<void> _handleLoginAfterAuth(BuildContext context, AppUser user) async {
+    final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+
+    final role = doc.data()?['role'];
+
+    if (role == null) {
+      // 역할이 아직 설정되지 않았으면 역할 선택 화면으로
+      Navigator.pushReplacementNamed(context, '/select-role');
+    } else if (role == 'shipper') {
+      Navigator.pushReplacementNamed(context, '/home', arguments: user);
+    } else if (role == 'driver') {
+      Navigator.pushReplacementNamed(context, '/driver-home', arguments: user);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('유효하지 않은 사용자 역할입니다.')),
+      );
+      await _authService.signOut();
+      Navigator.pushReplacementNamed(context, '/login');
+    }
   }
 }
