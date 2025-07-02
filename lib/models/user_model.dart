@@ -14,13 +14,18 @@ class AppUser {
   });
 
   Map<String, dynamic> toMap() {
-    return {
+    final map = {
       'uid': uid,
       'email': email,
       'displayName': displayName,
       'photoUrl': photoUrl,
-      'role': role,
     };
+
+    if (role != null) {
+      map['role'] = role;
+    }
+
+    return map;
   }
 
   factory AppUser.fromMap(Map<String, dynamic> map) {

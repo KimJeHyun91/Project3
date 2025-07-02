@@ -65,9 +65,16 @@ class RoleSelectionScreen extends StatelessWidget {
             displayName: user.displayName ?? '',
           ),
         );
-      } else {
-        Navigator.pushReplacementNamed(context, '/driver-home');
-      }
+      } else if (role == 'driver') {
+        Navigator.pushReplacementNamed(
+          context,
+          '/driver-home',
+          arguments: AppUser(
+            uid: user.uid,
+            email: user.email ?? '',
+            displayName: user.displayName ?? '',
+          ),
+        );      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('역할 저장 실패: $e')),
