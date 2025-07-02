@@ -47,28 +47,28 @@ class DriverHomeScreen extends StatelessWidget {
                 icon: Icons.inbox,
                 label: '요청 주문',
                 onTap: () {
-                  Navigator.pushNamed(context, '/carrier/requests');
+                  Navigator.pushNamed(context, '/driver/requests');
                 },
               ),
               _HomeButton(
                 icon: Icons.local_shipping,
                 label: '내 배송',
                 onTap: () {
-                  Navigator.pushNamed(context, '/carrier/ongoing');
+                  Navigator.pushNamed(context, '/driver/ongoing');
                 },
               ),
               _HomeButton(
                 icon: Icons.history,
                 label: '배송 이력',
                 onTap: () {
-                  Navigator.pushNamed(context, '/carrier/history');
+                  Navigator.pushNamed(context, '/driver/history');
                 },
               ),
               _HomeButton(
                 icon: Icons.attach_money,
                 label: '정산',
                 onTap: () {
-                  Navigator.pushNamed(context, '/carrier/payment');
+                  Navigator.pushNamed(context, '/driver/payment');
                 },
               ),
             ],
@@ -102,7 +102,7 @@ class _HomeButton extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 40, color: Colors.blue),
+              Icon(icon, size: 40, color: Colors.red),
               const SizedBox(height: 12),
               Text(label, style: const TextStyle(fontSize: 16)),
             ],
