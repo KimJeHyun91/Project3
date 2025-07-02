@@ -23,6 +23,7 @@ class RequestListScreen extends StatelessWidget {
         stream: FirebaseFirestore.instance
             .collection('delivery_requests')
             .where('uid', isEqualTo: user.uid)
+            .where('status', whereIn: ['요청됨', '배차 확정'])
             .orderBy('createdAt', descending: true)
             .snapshots(),
         builder: (context, snapshot) {

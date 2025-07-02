@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:project3/screens/driver/driver_ongoing_page.dart';
+import 'package:project3/screens/tracking/tracking_list_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/role_selection_screen.dart';
 import 'screens/home/home_screen.dart';
@@ -61,7 +62,9 @@ final Map<String, RouteFactory> appRoutes = {
     return MaterialPageRoute(builder: (_) => RequestDetailScreen(requestId: args));
   },
 
-  '/tracking': (settings) {
+  '/tracking': (_) => MaterialPageRoute(builder: (_) => const TrackingListScreen()),
+
+  '/tracking-detail': (settings) {
     final args = settings.arguments;
     if (args is! String) {
       return _errorRoute('배송 ID가 없습니다.');
