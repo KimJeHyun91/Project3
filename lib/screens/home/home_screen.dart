@@ -36,14 +36,14 @@ class HomeScreen extends StatelessWidget {
             ),
             _HomeButton(
               icon: Icons.list_alt,
-              label: '요청 목록',
+              label: '요청 관리',
               onTap: () {
                 Navigator.pushNamed(context, '/requestList');
               },
             ),
             _HomeButton(
-              icon: Icons.route,
-              label: '경로 지정',
+              icon: Icons.payment,
+              label: '결제 관리',
               onTap: () {
                 Navigator.pushNamed(context, '/route');
               },

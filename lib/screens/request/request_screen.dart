@@ -22,6 +22,7 @@ class _RequestScreenState extends State<RequestScreen> {
   final _widthController = TextEditingController();
   final _heightController = TextEditingController();
   final _lengthController = TextEditingController();
+  final _priceController = TextEditingController();
 
   String? _selectedItem;
   String? _selectedVehicleType;
@@ -29,6 +30,19 @@ class _RequestScreenState extends State<RequestScreen> {
   bool _isRefrigerated = false;
   bool _needsLift = false;
   bool _isFragile = false;
+
+  InputDecoration _inputDecoration(String label) {
+    return InputDecoration(
+      labelText: label,
+      filled: true,
+      fillColor: Colors.grey.shade100,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+    );
+  }
 
   void _submit() async {
     if (_formKey.currentState!.validate() && _pickupTime != null) {
@@ -54,6 +68,7 @@ class _RequestScreenState extends State<RequestScreen> {
           'width': _widthController.text.trim(),
           'height': _heightController.text.trim(),
           'length': _lengthController.text.trim(),
+          'price': int.tryParse(_priceController.text.trim()) ?? 0,
           'isRefrigerated': _isRefrigerated,
           'needsLift': _needsLift,
           'isFragile': _isFragile,
@@ -106,6 +121,7 @@ class _RequestScreenState extends State<RequestScreen> {
     _widthController.dispose();
     _heightController.dispose();
     _lengthController.dispose();
+    _priceController.dispose();
     super.dispose();
   }
 
@@ -114,35 +130,38 @@ class _RequestScreenState extends State<RequestScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('배송 요청')),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         child: Form(
           key: _formKey,
           child: ListView(
             children: [
               TextFormField(
                 controller: _senderNameController,
-                decoration: const InputDecoration(labelText: '보내는 사람 이름'),
+                decoration: _inputDecoration('보내는 사람 이름'),
                 validator: (value) => value == null || value.isEmpty ? '이름을 입력하세요' : null,
               ),
+              const SizedBox(height: 12),
               TextFormField(
                 controller: _senderPhoneController,
-                decoration: const InputDecoration(labelText: '연락처'),
+                decoration: _inputDecoration('연락처'),
                 keyboardType: TextInputType.phone,
                 validator: (value) => value == null || value.isEmpty ? '연락처를 입력하세요' : null,
               ),
+              const SizedBox(height: 12),
               TextFormField(
                 controller: _pickupAddressController,
-                decoration: const InputDecoration(labelText: '픽업 주소'),
+                decoration: _inputDecoration('출발지'),
                 validator: (value) => value == null || value.isEmpty ? '주소를 입력하세요' : null,
               ),
+              const SizedBox(height: 12),
               TextFormField(
                 controller: _deliveryAddressController,
-                decoration: const InputDecoration(labelText: '배송 주소'),
+                decoration: _inputDecoration('도착지'),
                 validator: (value) => value == null || value.isEmpty ? '주소를 입력하세요' : null,
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: '품목 선택'),
+                decoration: _inputDecoration('품목 선택'),
                 value: _selectedItem,
                 items: const [
                   DropdownMenuItem(value: '이사짐', child: Text('이사짐')),
@@ -152,8 +171,9 @@ class _RequestScreenState extends State<RequestScreen> {
                 onChanged: (val) => setState(() => _selectedItem = val),
                 validator: (value) => value == null ? '품목을 선택하세요' : null,
               ),
+              const SizedBox(height: 12),
               DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: '차량 종류 선택'),
+                decoration: _inputDecoration('차량 종류 선택'),
                 value: _selectedVehicleType,
                 items: const [
                   DropdownMenuItem(value: '1톤 트럭', child: Text('1톤 트럭')),
@@ -163,34 +183,44 @@ class _RequestScreenState extends State<RequestScreen> {
                 onChanged: (val) => setState(() => _selectedVehicleType = val),
                 validator: (value) => value == null ? '차량을 선택하세요' : null,
               ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _priceController,
+                decoration: _inputDecoration('희망 운임 (원)'),
+                keyboardType: TextInputType.number,
+                validator: (value) => value == null || value.isEmpty ? '희망 운임을 입력하세요' : null,
+              ),
+              const SizedBox(height: 12),
               TextFormField(
                 controller: _weightController,
-                decoration: const InputDecoration(labelText: '무게 (kg/톤)'),
+                decoration: _inputDecoration('무게 (kg/톤)'),
               ),
+              const SizedBox(height: 12),
               Row(
                 children: [
                   Expanded(
                     child: TextFormField(
                       controller: _widthController,
-                      decoration: const InputDecoration(labelText: '가로(cm)'),
+                      decoration: _inputDecoration('가로(cm)'),
                     ),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: TextFormField(
                       controller: _lengthController,
-                      decoration: const InputDecoration(labelText: '세로(cm)'),
+                      decoration: _inputDecoration('세로(cm)'),
                     ),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: TextFormField(
                       controller: _heightController,
-                      decoration: const InputDecoration(labelText: '높이(cm)'),
+                      decoration: _inputDecoration('높이(cm)'),
                     ),
                   ),
                 ],
               ),
+              const SizedBox(height: 12),
               CheckboxListTile(
                 title: const Text('냉장/냉동 필요'),
                 value: _isRefrigerated,
@@ -221,15 +251,24 @@ class _RequestScreenState extends State<RequestScreen> {
                   ),
                 ],
               ),
+              const SizedBox(height: 12),
               TextFormField(
                 controller: _itemDescriptionController,
-                decoration: const InputDecoration(labelText: '물품 설명'),
+                decoration: _inputDecoration('물품 설명'),
                 maxLines: 2,
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF439395),
+                  foregroundColor: Colors.white,
+                  minimumSize: const Size.fromHeight(50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
                 onPressed: _submit,
-                child: const Text('요청하기'),
+                child: const Text('배차신청', style: TextStyle(fontSize: 16)),
               ),
             ],
           ),

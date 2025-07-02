@@ -23,8 +23,8 @@ final Map<String, WidgetBuilder> appRoutes = {
   '/request': (context) => const RequestScreen(),
   '/requestList': (context) => const RequestListScreen(),
   '/request-detail': (context) {
-    final request = ModalRoute.of(context)!.settings.arguments as DeliveryRequest;
-    return RequestDetailScreen(request: request);
+    final requestId = ModalRoute.of(context)!.settings.arguments as String;
+    return RequestDetailScreen(requestId: requestId);
   },
   '/tracking': (context) {
     final requestId = ModalRoute.of(context)!.settings.arguments as String;
