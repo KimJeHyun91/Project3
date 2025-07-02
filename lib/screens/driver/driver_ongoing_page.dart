@@ -22,7 +22,7 @@ class DriverOngoingPage extends StatelessWidget {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('delivery_requests')
-            .where('status', isEqualTo: '배차 확정')
+            .where('status', whereIn: ['배차 확정', '배송중'])
             .where('assignedDriverId', isEqualTo: user.uid)
             .orderBy('pickupTime') // 원하는 기준 정렬
             .snapshots(),
