@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:project3/models/user_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class HomeScreen extends StatelessWidget {
+class DriverHomeScreen extends StatelessWidget {
   final AppUser user;
-  const HomeScreen({super.key, required this.user});
+  const DriverHomeScreen({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        SystemNavigator.pop(); // 뒤로가기 누르면 앱 종료
+        // 뒤로가기 시 앱 종료
+        SystemNavigator.pop();
         return false;
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('화주 홈'),
-          automaticallyImplyLeading: false, // ← 뒤로가기 아이콘 제거
+          title: const Text('차주 홈'),
+          automaticallyImplyLeading: false, // 뒤로가기 버튼 제거
           actions: [
             IconButton(
               icon: const Icon(Icons.logout),
@@ -27,7 +28,7 @@ class HomeScreen extends StatelessWidget {
                   Navigator.pushNamedAndRemoveUntil(
                     context,
                     '/login',
-                        (route) => false,
+                        (route) => false, // 모든 이전 라우트 제거
                   );
                 }
               },
@@ -43,31 +44,31 @@ class HomeScreen extends StatelessWidget {
             mainAxisSpacing: 16,
             children: [
               _HomeButton(
-                icon: Icons.add_box,
-                label: '배송 요청',
+                icon: Icons.inbox,
+                label: '요청 주문',
                 onTap: () {
-                  Navigator.pushNamed(context, '/request');
+                  Navigator.pushNamed(context, '/carrier/requests');
                 },
               ),
               _HomeButton(
-                icon: Icons.list_alt,
-                label: '요청 목록',
+                icon: Icons.local_shipping,
+                label: '내 배송',
                 onTap: () {
-                  Navigator.pushNamed(context, '/requestList');
+                  Navigator.pushNamed(context, '/carrier/ongoing');
                 },
               ),
               _HomeButton(
-                icon: Icons.route,
-                label: '경로 지정',
+                icon: Icons.history,
+                label: '배송 이력',
                 onTap: () {
-                  Navigator.pushNamed(context, '/route');
+                  Navigator.pushNamed(context, '/carrier/history');
                 },
               ),
               _HomeButton(
-                icon: Icons.track_changes,
-                label: '배송 추적',
+                icon: Icons.attach_money,
+                label: '정산',
                 onTap: () {
-                  Navigator.pushNamed(context, '/tracking');
+                  Navigator.pushNamed(context, '/carrier/payment');
                 },
               ),
             ],

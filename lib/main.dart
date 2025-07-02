@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:project3/screens/home/driver_home.dart';
 import 'firebase_options.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/home/home_screen.dart';
@@ -32,6 +33,13 @@ class MyApp extends StatelessWidget {
           final user = settings.arguments as AppUser;
           return MaterialPageRoute(
             builder: (context) => HomeScreen(user: user),
+          );
+        }
+
+        if (settings.name == '/driver-home') {
+          final user = settings.arguments as AppUser;
+          return MaterialPageRoute(
+            builder: (context) => DriverHomeScreen(user: user),
           );
         }
 

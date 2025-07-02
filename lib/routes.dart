@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project3/screens/home/driver_home.dart';
 
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/role_selection_screen.dart';
@@ -15,10 +16,10 @@ import 'models/delivery_request_model.dart';
 final Map<String, WidgetBuilder> appRoutes = {
   '/login': (context) => LoginScreen(),
   '/select-role': (context) => const RoleSelectionScreen(),
-  '/home': (context) {
-    final args = ModalRoute.of(context)!.settings.arguments as AppUser;
-    return HomeScreen(user: args);
-  },
+  // '/home': (context) {
+  //   final args = ModalRoute.of(context)!.settings.arguments as AppUser;
+  //   return HomeScreen(user: args);
+  // },
   // '/driver-home': (context) => const DriverHomeScreen(),
   '/request': (context) => const RequestScreen(),
   '/requestList': (context) => const RequestListScreen(),

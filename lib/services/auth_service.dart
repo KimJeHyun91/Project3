@@ -9,6 +9,8 @@ class AuthService {
 
   Future<AppUser?> signInWithGoogle() async {
     try {
+      await GoogleSignIn().signOut();
+
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) return null;
 
@@ -27,7 +29,10 @@ class AuthService {
         photoUrl: user.photoURL,
       );
 
-      await _db.collection('users').doc(user.uid).set(appUser.toMap(), SetOptions(merge: true));
+      await _db.collection('users').doc(user.uid).set(
+          appUser.toMap(),
+          SetOptions(merge: true)
+      );
       return appUser;
     } catch (e) {
       print('❗ 로그인 중 오류 발생: $e');
