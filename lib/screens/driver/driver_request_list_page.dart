@@ -11,7 +11,7 @@ class DriverRequestListPage extends StatelessWidget {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('delivery_requests')
-            .where('status', isNotEqualTo: '매칭됨') // ✅ 매칭 안 된 주문만
+            .where('status', isNotEqualTo: '배차 확정') // ✅ 매칭 안 된 주문만
             .orderBy('status') // ✅ isNotEqualTo 쓰려면 필수
             .snapshots(),
         builder: (context, snapshot) {
@@ -34,12 +34,12 @@ class DriverRequestListPage extends StatelessWidget {
               final data = doc.data() as Map<String, dynamic>;
 
               return ListTile(
-                leading: const Icon(Icons.local_shipping),
+                // leading: const Icon(Icons.local_shipping),
                 title: Text('${data['pickupAddress']} → ${data['deliveryAddress']}'),
                 subtitle: Text('차량: ${data['vehicleType']} / 중량: ${data['weight']}kg'),
                 trailing: Text('${data['price']}원'),
                   onTap: () {
-                    print('📦 전달할 doc: ${doc.id}');
+                    // print('전달할 doc: ${doc.id}');
                     Navigator.pushNamed(
                       context,
                       '/driver/request-detail',

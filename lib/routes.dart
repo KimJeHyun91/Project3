@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:project3/screens/driver/driver_ongoing_page.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/role_selection_screen.dart';
 import 'screens/home/home_screen.dart';
@@ -54,10 +55,10 @@ final Map<String, RouteFactory> appRoutes = {
 
   '/request-detail': (settings) {
     final args = settings.arguments;
-    if (args is! DeliveryRequest) {
+    if (args is! String) {
       return _errorRoute('요청 정보가 잘못되었습니다.');
     }
-    return MaterialPageRoute(builder: (_) => RequestDetailScreen(request: args));
+    return MaterialPageRoute(builder: (_) => RequestDetailScreen(requestId: args));
   },
 
   '/tracking': (settings) {
@@ -77,6 +78,8 @@ final Map<String, RouteFactory> appRoutes = {
     }
     return MaterialPageRoute(builder: (_) => DriverRequestDetailPage(requestDoc: args));
   },
+
+  '/driver/ongoing': (_) => MaterialPageRoute(builder: (_) => const DriverOngoingPage()),
 };
 
 MaterialPageRoute _errorRoute(String message) {
