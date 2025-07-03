@@ -12,15 +12,32 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: ElevatedButton.icon(
-          icon: Image.asset("assets/google_logo.png", height: 24),
-          label: const Text("Google 로그인"),
-          onPressed: () async {
-            final appUser = await _authService.signInWithGoogle();
-            if (appUser != null && context.mounted) {
-              _handleLoginAfterAuth(context, appUser);
-            }
-          },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // ✅ CARGONATION 로고
+            Image.asset(
+              'assets/images/cargonation.png', // assets 폴더에 이 경로로 저장되어 있어야 함
+              width: 180,
+              height: 180,
+            ),
+            const SizedBox(height: 40),
+
+            // ✅ Google 로그인 버튼
+            ElevatedButton.icon(
+              icon: Image.network(
+                'https://developers.google.com/identity/images/g-logo.png',
+                height: 24,
+              ),
+              label: const Text("Google 로그인"),
+              onPressed: () async {
+                final appUser = await _authService.signInWithGoogle();
+                if (appUser != null && context.mounted) {
+                  _handleLoginAfterAuth(context, appUser);
+                }
+              },
+            ),
+          ],
         ),
       ),
     );
@@ -32,7 +49,6 @@ class LoginScreen extends StatelessWidget {
     final role = doc.data()?['role'];
 
     if (role == null) {
-      // 역할이 아직 설정되지 않았으면 역할 선택 화면으로
       Navigator.pushReplacementNamed(context, '/select-role');
     } else if (role == 'shipper') {
       Navigator.pushReplacementNamed(context, '/home', arguments: user);
