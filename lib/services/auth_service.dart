@@ -9,7 +9,7 @@ class AuthService {
 
   Future<AppUser?> signInWithGoogle() async {
     try {
-      await GoogleSignIn().signOut();
+      await GoogleSignIn().signOut(); // 중복 로그인 방지
 
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) return null;
@@ -22,18 +22,39 @@ class AuthService {
 
       final userCredential = await _auth.signInWithCredential(credential);
       final user = userCredential.user!;
-      final appUser = AppUser(
+      final userRef = _db.collection('users').doc(user.uid);
+
+      final snapshot = await userRef.get();
+
+      if (!snapshot.exists) {
+        // 🔰 최초 로그인 시 balance = 0 포함
+        await userRef.set({
+          'uid': user.uid,
+          'email': user.email,
+          'displayName': user.displayName,
+          'photoUrl': user.photoURL,
+          'role': 'shipper',
+          'balance': 0,
+        });
+      } else {
+        // 🔁 기존 유저는 balance는 유지하고 나머지 정보만 merge
+        await userRef.set({
+          'uid': user.uid,
+          'email': user.email,
+          'displayName': user.displayName,
+          'photoUrl': user.photoURL,
+          'role': snapshot.data()?['role'] ?? 'shipper',
+        }, SetOptions(merge: true));
+      }
+
+      return AppUser(
         uid: user.uid,
         email: user.email!,
         displayName: user.displayName,
         photoUrl: user.photoURL,
+        role: snapshot.data()?['role'] ?? 'shipper',
+        balance: snapshot.data()?['balance'] ?? 0,
       );
-
-      await _db.collection('users').doc(user.uid).set(
-          appUser.toMap(),
-          SetOptions(merge: true)
-      );
-      return appUser;
     } catch (e) {
       print('❗ 로그인 중 오류 발생: $e');
       return null;

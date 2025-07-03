@@ -8,11 +8,6 @@ class HomeScreen extends StatelessWidget {
   final AppUser user;
   const HomeScreen({super.key, required this.user});
 
-  Future<int> fetchUserBalance(String uid) async {
-    final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
-    return (doc.data()?['balance'] ?? 0) as int;
-  }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -45,18 +40,20 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// 💰 사용자 잔액 표시
-              FutureBuilder<int>(
-                future: fetchUserBalance(user.uid),
+              /// 💰 사용자 잔액 실시간 표시
+              StreamBuilder<DocumentSnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(user.uid)
+                    .snapshots(),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
+                  if (!snapshot.hasData) {
                     return const Center(child: CircularProgressIndicator());
                   }
-                  if (snapshot.hasError) {
-                    return const Text('잔액 불러오기 실패');
-                  }
 
-                  final balance = snapshot.data ?? 0;
+                  final data = snapshot.data!.data() as Map<String, dynamic>?;
+                  final balance = data?['balance'] ?? 0;
+
                   return Container(
                     padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                     margin: const EdgeInsets.only(bottom: 16),
@@ -72,7 +69,7 @@ class HomeScreen extends StatelessWidget {
                           style: const TextStyle(fontSize: 16),
                         ),
                         Text(
-                          '잔액: ${balance.toString()}원',
+                          '잔액: ₩${balance.toString()}',
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
