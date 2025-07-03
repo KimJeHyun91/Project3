@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:project3/screens/driver/driver_history_page.dart';
 import 'package:project3/screens/driver/driver_ongoing_page.dart';
+import 'package:project3/screens/driver/driver_payment_page.dart';
 import 'package:project3/screens/tracking/tracking_list_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/role_selection_screen.dart';
@@ -96,6 +98,8 @@ final Map<String, RouteFactory> appRoutes = {
   },
 
   '/driver/ongoing': (_) => MaterialPageRoute(builder: (_) => const DriverOngoingPage()),
+  '/driver/history': (_) => MaterialPageRoute(builder: (_) => const DriverHistoryPage()),
+  '/driver/payment': (_) => MaterialPageRoute(builder: (_) => const DriverPaymentPage()),
 };
 
 MaterialPageRoute _errorRoute(String message) {

@@ -80,7 +80,10 @@ class TrackingListScreen extends StatelessWidget {
                                 await FirebaseFirestore.instance
                                     .collection('delivery_requests')
                                     .doc(doc.id)
-                                    .update({'status': '대금 지불 완료'});
+                                    .update({
+                                  'status': '대금 지불 완료',
+                                  'updatedAt': FieldValue.serverTimestamp(),
+                                });
 
                                 if (context.mounted) {
                                   Navigator.pop(context); // 닫기
