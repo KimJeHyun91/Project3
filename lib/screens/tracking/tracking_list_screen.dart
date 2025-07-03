@@ -22,7 +22,7 @@ class TrackingListScreen extends StatelessWidget {
         stream: FirebaseFirestore.instance
             .collection('delivery_requests')
             .where('uid', isEqualTo: user.uid)
-            .where('status', whereIn: ['배송중', '배송 완료', '대금 지불 완료']) // 추적 대상 상태
+            .where('status', whereIn: ['배송중', '배송 완료', '대금 지불 완료', '대금 지불 대기']) // 추적 대상 상태
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -81,7 +81,7 @@ class TrackingListScreen extends StatelessWidget {
                                     .collection('delivery_requests')
                                     .doc(doc.id)
                                     .update({
-                                  'status': '대금 지불 완료',
+                                  'status': '대금 지불 대기',
                                   'updatedAt': FieldValue.serverTimestamp(),
                                 });
 

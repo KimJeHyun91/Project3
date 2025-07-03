@@ -79,13 +79,13 @@ final Map<String, RouteFactory> appRoutes = {
   },
   '/tracking': (_) => MaterialPageRoute(builder: (_) => const TrackingListScreen()),
 
-  '/tracking-detail': (settings) {
-    final args = settings.arguments;
-    if (args is! String) {
-      return _errorRoute('배송 ID가 없습니다.');
-    }
-    return MaterialPageRoute(builder: (_) => TrackingScreen(requestId: args));
-  },
+  // '/tracking-detail': (settings) {
+  //   final args = settings.arguments;
+  //   if (args is! String) {
+  //     return _errorRoute('배송 ID가 없습니다.');
+  //   }
+  //   return MaterialPageRoute(builder: (_) => TrackingScreen(requestId: args));
+  // },
 
   '/driver/requests': (_) => MaterialPageRoute(builder: (_) => const DriverRequestListPage()),
 
