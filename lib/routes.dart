@@ -75,6 +75,8 @@ final Map<String, RouteFactory> appRoutes = {
       builder: (_) => PaymentTestScreen(amount: amount),
     );
   },
+  '/tracking': (_) => MaterialPageRoute(builder: (_) => const TrackingListScreen()),
+
   '/tracking-detail': (settings) {
     final args = settings.arguments;
     if (args is! String) {

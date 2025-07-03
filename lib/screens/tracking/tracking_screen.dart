@@ -33,39 +33,33 @@ class TrackingScreen extends StatelessWidget {
               children: [
                 Text('현재 상태: $status', style: const TextStyle(fontSize: 22)),
                 const SizedBox(height: 32),
-                if (status != '하차 완료')
-                  ElevatedButton.icon(
-                    icon: const Icon(Icons.update),
-                    label: const Text('다음 상태로 업데이트'),
-                    onPressed: () async {
-                      final nextStatus = _getNextStatus(status);
-                      await docRef.update({'status': nextStatus});
-                    },
-                  )
-                else
+
+                if (status == '배송 완료') ...[
                   const Text(
-                    '배송이 완료되었습니다.',
-                    style: TextStyle(fontSize: 18, color: Colors.green),
+                    '배송 완료 확인 버튼을 누르시면 대금이 차주에게 지급됩니다.\n물품이 배송지에 도착했는지 확인 후 눌러주세요.',
+                    style: TextStyle(fontSize: 16),
+                    textAlign: TextAlign.center,
                   ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await docRef.update({'status': '대금 결제 완료'});
+
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('배송 완료가 확인되었습니다.')),
+                        );
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: const Text('배송 완료 확인'),
+                  ),
+                ],
               ],
             ),
           );
         },
       ),
     );
-  }
-
-  /// 다음 상태 반환 로직
-  String _getNextStatus(String current) {
-    switch (current) {
-      case '요청됨':
-        return '상차 중';
-      case '상차 중':
-        return '운송 중';
-      case '운송 중':
-        return '하차 완료';
-      default:
-        return '하차 완료';
-    }
   }
 }
