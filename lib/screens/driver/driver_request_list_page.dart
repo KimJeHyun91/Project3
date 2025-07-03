@@ -11,8 +11,7 @@ class DriverRequestListPage extends StatelessWidget {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('delivery_requests')
-            .where('status', isNotEqualTo: '배차 확정') // ✅ 매칭 안 된 주문만
-            .orderBy('status') // ✅ isNotEqualTo 쓰려면 필수
+            .where('status', isEqualTo: '요청됨')
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
