@@ -23,7 +23,8 @@ class TrackingScreen extends StatelessWidget {
             return const Center(child: Text('요청 정보를 불러올 수 없습니다.'));
           }
 
-          final data = snapshot.data!.data() as Map<String, dynamic>;          final status = data['status'] ?? '알 수 없음';
+          final data = snapshot.data!.data() as Map<String, dynamic>;
+          final status = data['status'] ?? '알 수 없음';
 
           return Padding(
             padding: const EdgeInsets.all(24.0),
@@ -53,49 +54,12 @@ class TrackingScreen extends StatelessWidget {
                     },
                     child: const Text('배송 완료 확인'),
                   ),
-                ]
-
-                else if (_canAdvance(status)) ...[
-                  ElevatedButton.icon(
-                    icon: const Icon(Icons.update),
-                    label: const Text('다음 상태로 업데이트'),
-                    onPressed: () async {
-                      final nextStatus = _getNextStatus(status);
-                      await docRef.update({'status': nextStatus});
-                    },
-                  ),
-                ]
-
-                else ...[
-                    const Text(
-                      '배송이 완료되었습니다.',
-                      style: TextStyle(fontSize: 18, color: Colors.green),
-                    ),
-                  ],
+                ],
               ],
             ),
           );
         },
       ),
     );
-  }
-
-  /// 다음 상태 반환 로직
-  String _getNextStatus(String current) {
-    switch (current) {
-      case '요청됨':
-        return '상차 중';
-      case '상차 중':
-        return '운송 중';
-      case '운송 중':
-        return '하차 완료';
-      default:
-        return current;
-    }
-  }
-
-  /// 상태 전환 가능한지 여부 (요청~운송 중까지만)
-  bool _canAdvance(String status) {
-    return ['요청됨', '상차 중', '운송 중'].contains(status);
   }
 }
