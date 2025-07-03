@@ -57,10 +57,10 @@ class HomeScreen extends StatelessWidget {
                 },
               ),
               _HomeButton(
-                icon: Icons.route,
-                label: '경로 지정',
+                icon: Icons.payments,
+                label: '결제 관리',
                 onTap: () {
-                  Navigator.pushNamed(context, '/route');
+                  Navigator.pushNamed(context, '/payment');
                 },
               ),
               _HomeButton(
