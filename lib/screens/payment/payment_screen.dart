@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PaymentScreen extends StatelessWidget {
   const PaymentScreen({super.key});
@@ -18,25 +20,41 @@ class PaymentScreen extends StatelessWidget {
             ),
             const SizedBox(height: 32),
 
-            // ✅ 카드 결제 - 충전 금액 입력 받기
+            // 카드 결제 테스트 (결제 테스트 페이지로 이동)
             ElevatedButton.icon(
-              onPressed: () => _showAmountDialog(context),
+              onPressed: () => _showAmountDialog(context, useFirebase: false),
               icon: const Icon(Icons.account_balance_wallet),
-              label: const Text('선불 충전 결제 (카드 결제)'),
+              label: const Text('선불 충전 결제 (카드 결제 테스트)'),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 backgroundColor: const Color(0xFF00A8A8),
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
             const SizedBox(height: 16),
 
-            // 계좌이체 버튼
+            // 🔹 Firebase에 직접 충전 기록
             ElevatedButton.icon(
-              onPressed: () =>
-                  Navigator.pushNamed(context, '/payment-transfer'),
+              onPressed: () => _showAmountDialog(context, useFirebase: true),
+              icon: const Icon(Icons.flash_on),
+              label: const Text('선불 충전 (Firebase에 기록)'),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                backgroundColor: const Color(0xFF00C49A),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // 계좌 이체
+            ElevatedButton.icon(
+              onPressed: () => Navigator.pushNamed(context, '/payment-transfer'),
               icon: const Icon(Icons.account_balance),
               label: const Text('가상 계좌 이체'),
               style: ElevatedButton.styleFrom(
@@ -44,7 +62,8 @@ class PaymentScreen extends StatelessWidget {
                 backgroundColor: const Color(0xFF205295),
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
           ],
@@ -53,47 +72,79 @@ class PaymentScreen extends StatelessWidget {
     );
   }
 
-  void _showAmountDialog(BuildContext context) {
+  void _showAmountDialog(BuildContext context, {required bool useFirebase}) {
     final TextEditingController amountController = TextEditingController();
 
     showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            title: const Text('충전 금액 입력'),
-            content: TextField(
-              controller: amountController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: '충전 금액 (원)',
-                hintText: '예: 1000',
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context), // 취소 버튼은 그대로 pop 유지
-                child: const Text('취소'),
-              ),
-              TextButton(
-                onPressed: () {
-                  final String amountText = amountController.text;
-                  final int? amount = int.tryParse(amountText);
-                  if (amount != null && amount > 0) {
-                    Navigator.pushNamed(
-                      context,
-                      '/payment-test',
-                      arguments: amount,
-                    );
-                  } else {
+      builder: (context) => AlertDialog(
+        title: const Text('충전 금액 입력'),
+        content: TextField(
+          controller: amountController,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+            labelText: '충전 금액 (원)',
+            hintText: '예: 1000',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('취소'),
+          ),
+          TextButton(
+            onPressed: () async {
+              final String amountText = amountController.text;
+              final int? amount = int.tryParse(amountText);
+
+              if (amount != null && amount > 0) {
+                Navigator.pop(context); // 먼저 AlertDialog 닫기
+
+                if (useFirebase) {
+                  // 🔹 Firestore에 balance 충전
+                  final user = FirebaseAuth.instance.currentUser;
+                  if (user == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('유효한 금액을 입력해주세요.')),
+                      const SnackBar(content: Text('로그인이 필요합니다.')),
+                    );
+                    return;
+                  }
+
+                  try {
+                    await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(user.uid)
+                        .set(
+                      {'balance': FieldValue.increment(amount)},
+                      SetOptions(merge: true),
+                    );
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('₩$amount 충전 완료 (Firebase 기록됨)')),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('충전에 실패했습니다.')),
                     );
                   }
-                },
-                child: const Text('확인'),
-              ),
-            ],
+                } else {
+                  // 🔸 결제 테스트 페이지로 이동
+                  Navigator.pushNamed(
+                    context,
+                    '/payment-test',
+                    arguments: amount,
+                  );
+                }
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('유효한 금액을 입력해주세요.')),
+                );
+              }
+            },
+            child: const Text('확인'),
           ),
+        ],
+      ),
     );
   }
 }

@@ -4,6 +4,7 @@ class AppUser {
   final String? displayName;
   final String? photoUrl;
   final String? role;
+  final int? balance;
 
   AppUser({
     required this.uid,
@@ -11,19 +12,19 @@ class AppUser {
     this.displayName,
     this.photoUrl,
     this.role,
+    this.balance,
   });
 
   Map<String, dynamic> toMap() {
-    final map = {
+    final Map<String, dynamic> map = {
       'uid': uid,
       'email': email,
       'displayName': displayName,
       'photoUrl': photoUrl,
     };
 
-    if (role != null) {
-      map['role'] = role;
-    }
+    if (balance != null) map['balance'] = balance;
+    if (role != null) map['role'] = role;
 
     return map;
   }
@@ -34,7 +35,8 @@ class AppUser {
       email: map['email'],
       displayName: map['displayName'],
       photoUrl: map['photoUrl'],
-      role: map['role'], // ← 추가
+      role: map['role'],
+      balance: map['balance'] ?? 0,
     );
   }
 }

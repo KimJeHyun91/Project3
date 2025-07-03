@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class PaymentTopUpScreen extends StatefulWidget {
   const PaymentTopUpScreen({super.key});
@@ -10,7 +12,7 @@ class PaymentTopUpScreen extends StatefulWidget {
 class _PaymentTopUpScreenState extends State<PaymentTopUpScreen> {
   final _amountController = TextEditingController();
 
-  void _handleTopUp() {
+  Future<void> _handleTopUp() async {
     final amount = int.tryParse(_amountController.text);
     if (amount == null || amount <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -19,12 +21,36 @@ class _PaymentTopUpScreenState extends State<PaymentTopUpScreen> {
       return;
     }
 
-    // 실제 카드 결제 API 연동은 이곳에 구현 예정
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('₩$amount 충전이 완료되었습니다.')),
-    );
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('로그인이 필요합니다.')),
+      );
+      return;
+    }
 
-    Navigator.pop(context);
+    try {
+      // 🔹 Firestore에 잔액 누적 저장
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .set(
+        {'balance': FieldValue.increment(amount)},
+        SetOptions(merge: true),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('₩$amount 충전이 완료되었습니다.')),
+      );
+
+      // 🔸 충전 후 결제 테스트 페이지로 이동
+      Navigator.pushReplacementNamed(context, '/payment-test');
+
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('충전에 실패했습니다. 다시 시도해주세요.')),
+      );
+    }
   }
 
   @override
@@ -62,7 +88,8 @@ class _PaymentTopUpScreenState extends State<PaymentTopUpScreen> {
                 backgroundColor: const Color(0xFF00A8A8),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
               ),
               child: const Text('충전하기'),
             ),

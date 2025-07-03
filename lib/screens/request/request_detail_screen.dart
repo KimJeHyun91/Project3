@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class RequestDetailScreen extends StatelessWidget {
@@ -134,19 +135,50 @@ class RequestDetailScreen extends StatelessWidget {
                 subtitle: Text('견적금액: ${data['price']}원'),
                 trailing: ElevatedButton(
                   onPressed: () async {
-                    await FirebaseFirestore.instance
-                        .collection('delivery_requests')
-                        .doc(requestId)
-                        .update({
-                      'status': '배차 확정',
-                      'assignedDriverId': data['driverId'],
-                      'assignedPrice': data['price'],
-                    });
-                    if (context.mounted) {
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('배차가 확정되었습니다.')),
-                      );
+                    final assignedPrice = data['price'] as int;
+                    final currentUser = FirebaseAuth.instance.currentUser;
+
+                    if (currentUser == null) return;
+
+                    final userRef = FirebaseFirestore.instance.collection('users').doc(currentUser.uid);
+
+                    try {
+                      await FirebaseFirestore.instance.runTransaction((transaction) async {
+                        final userSnap = await transaction.get(userRef);
+                        final currentBalance = (userSnap.data()?['balance'] ?? 0) as int;
+
+                        if (currentBalance < assignedPrice) {
+                          throw Exception('잔액이 부족합니다.');
+                        }
+
+                        // 🔻 balance 차감
+                        transaction.update(userRef, {
+                          'balance': currentBalance - assignedPrice,
+                        });
+
+                        // 🔸 배차 확정
+                        transaction.update(
+                          FirebaseFirestore.instance.collection('delivery_requests').doc(requestId),
+                          {
+                            'status': '배차 확정',
+                            'assignedDriverId': data['driverId'],
+                            'assignedPrice': assignedPrice,
+                          },
+                        );
+                      });
+
+                      if (context.mounted) {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('배차가 확정되었고, 결제가 완료되었습니다.')),
+                        );
+                      }
+                    } catch (e) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('❗ 결제 실패: ${e.toString()}')),
+                        );
+                      }
                     }
                   },
                   child: const Text('배차 확정'),
