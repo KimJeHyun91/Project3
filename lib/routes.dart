@@ -12,7 +12,10 @@ import 'screens/request/request_detail_screen.dart';
 import 'screens/tracking/tracking_screen.dart';
 import 'screens/driver/driver_request_list_page.dart';
 import 'screens/driver/driver_request_detail_page.dart';
-
+import 'screens/payment/payment_topup_screen.dart';
+import 'screens/payment/payment_transfer_screen.dart';
+import 'screens/payment/payment_screen.dart';
+import 'screens/payment/payment_test_screen.dart';
 import 'models/user_model.dart';
 import 'models/delivery_request_model.dart';
 
@@ -62,8 +65,16 @@ final Map<String, RouteFactory> appRoutes = {
     return MaterialPageRoute(builder: (_) => RequestDetailScreen(requestId: args));
   },
 
-  '/tracking': (_) => MaterialPageRoute(builder: (_) => const TrackingListScreen()),
-
+  '/payment': (_) => MaterialPageRoute(builder: (_) => const PaymentScreen()),
+  '/payment-topup': (_) => MaterialPageRoute(builder: (_) => const PaymentTopUpScreen()),
+  '/payment-transfer': (_) => MaterialPageRoute(builder: (_) => const PaymentTransferScreen()),
+  '/payment-test': (settings) {
+    final args = settings.arguments;
+    final amount = (args is int) ? args : 100000;
+    return MaterialPageRoute(
+      builder: (_) => PaymentTestScreen(amount: amount),
+    );
+  },
   '/tracking-detail': (settings) {
     final args = settings.arguments;
     if (args is! String) {
