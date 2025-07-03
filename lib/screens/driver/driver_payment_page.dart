@@ -19,7 +19,7 @@ class DriverPaymentPage extends StatelessWidget {
         stream: FirebaseFirestore.instance
             .collection('delivery_requests')
             .where('assignedDriverId', isEqualTo: user.uid)
-            .where('status', isEqualTo: '대금 지불 완료')
+            .where('status', whereIn: ['대금 지불 완료', '대금 지불 대기'])
             .orderBy('updatedAt', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
@@ -38,16 +38,30 @@ class DriverPaymentPage extends StatelessWidget {
               final data = docs[index].data() as Map<String, dynamic>;
               final price = data['price'] ?? 0;
               final updatedAt = (data['updatedAt'] as Timestamp?)?.toDate();
+              final status = data['status'] ?? '알 수 없음';
+
+              final isPaid = status == '대금 지불 완료';
 
               return Card(
                 margin: const EdgeInsets.all(12),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 child: ListTile(
-                  title: Text('+${price.toString()}원',
-                      style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
-                  subtitle: Text(updatedAt != null
-                      ? '정산일: ${DateFormat('yyyy-MM-dd').format(updatedAt)}'
-                      : '정산일: 없음'),
+                  title: isPaid
+                      ? Text('+${price.toString()}원',
+                      style: const TextStyle(
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16))
+                      : Text('${price.toString()}원 (지불 대기)',
+                      style: const TextStyle(
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16)),
+                  subtitle: Text(
+                    updatedAt != null
+                        ? '최근 업데이트: ${DateFormat('yyyy-MM-dd').format(updatedAt)}'
+                        : '최근 업데이트: 없음',
+                  ),
                 ),
               );
             },
