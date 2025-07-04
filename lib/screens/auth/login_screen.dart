@@ -41,16 +41,23 @@ class LoginScreen extends StatelessWidget {
   }
 
   Future<void> _handleLoginAfterAuth(BuildContext context, AppUser user) async {
-    final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+    final docRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
+    final doc = await docRef.get();
 
-    final role = doc.data()?['role'];
+
+    if (!doc.exists) {
+      await docRef.set(user.toMap());
+    }
+
+    final data = (await docRef.get()).data();
+    final role = data?['role'];
 
     if (role == null) {
       Navigator.pushReplacementNamed(context, '/select-role');
     } else if (role == 'shipper') {
-      Navigator.pushReplacementNamed(context, '/home', arguments: user);
+      Navigator.pushReplacementNamed(context, '/home', arguments: AppUser.fromMap(data!));
     } else if (role == 'driver') {
-      Navigator.pushReplacementNamed(context, '/driver-home', arguments: user);
+      Navigator.pushReplacementNamed(context, '/driver-home', arguments: AppUser.fromMap(data!));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('유효하지 않은 사용자 역할입니다.')),

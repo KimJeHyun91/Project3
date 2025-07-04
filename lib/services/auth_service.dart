@@ -25,15 +25,14 @@ class AuthService {
       final userRef = _db.collection('users').doc(user.uid);
 
       final snapshot = await userRef.get();
-
       if (!snapshot.exists) {
         await userRef.set({
           'uid': user.uid,
           'email': user.email,
           'displayName': user.displayName,
           'photoUrl': user.photoURL,
-          'role': 'shipper',
           'balance': 0,
+          'createdAt': Timestamp.now(),
         });
       } else {
         await userRef.set({
@@ -41,17 +40,18 @@ class AuthService {
           'email': user.email,
           'displayName': user.displayName,
           'photoUrl': user.photoURL,
-          'role': snapshot.data()?['role'] ?? 'shipper',
         }, SetOptions(merge: true));
       }
+      final updated = await userRef.get();
+      final data = updated.data() ?? {};
 
       return AppUser(
         uid: user.uid,
         email: user.email!,
         displayName: user.displayName,
         photoUrl: user.photoURL,
-        role: snapshot.data()?['role'] ?? 'shipper',
-        balance: snapshot.data()?['balance'] ?? 0,
+        role: data['role'],
+        balance: data['balance'] ?? 0,
       );
     } catch (e) {
       print('❗ 로그인 중 오류 발생: $e');
