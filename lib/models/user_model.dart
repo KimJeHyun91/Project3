@@ -23,9 +23,8 @@ class AppUser {
       'photoUrl': photoUrl,
     };
 
-    if (balance != null) map['balance'] = balance;
     if (role != null) map['role'] = role;
-
+    if (balance != null) map['balance'] = balance;
     return map;
   }
 
