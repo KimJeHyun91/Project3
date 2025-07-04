@@ -15,15 +15,12 @@ class LoginScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // ✅ CARGONATION 로고
             Image.asset(
-              'assets/images/cargonation.png', // assets 폴더에 이 경로로 저장되어 있어야 함
+              'assets/images/cargonation.png',
               width: 180,
               height: 180,
             ),
             const SizedBox(height: 40),
-
-            // ✅ Google 로그인 버튼
             ElevatedButton.icon(
               icon: Image.network(
                 'https://developers.google.com/identity/images/g-logo.png',

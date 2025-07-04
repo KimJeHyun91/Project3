@@ -11,7 +11,6 @@ import 'screens/home/driver_home.dart';
 import 'screens/request/request_screen.dart';
 import 'screens/request/request_list_screen.dart';
 import 'screens/request/request_detail_screen.dart';
-import 'screens/tracking/tracking_screen.dart';
 import 'screens/driver/driver_request_list_page.dart';
 import 'screens/driver/driver_request_detail_page.dart';
 import 'screens/payment/payment_topup_screen.dart';
@@ -32,19 +31,6 @@ final Map<String, RouteFactory> appRoutes = {
       return _errorRoute('사용자 정보가 누락되었습니다.');
     }
     return MaterialPageRoute(builder: (_) => HomeScreen(user: args));
-// final Map<String, WidgetBuilder> appRoutes = {
-//   '/login': (context) => LoginScreen(),
-//   '/select-role': (context) => const RoleSelectionScreen(),
-  // '/home': (context) {
-  //   final args = ModalRoute.of(context)!.settings.arguments as AppUser;
-  //   return HomeScreen(user: args);
-  // },
-  // '/driver-home': (context) => const DriverHomeScreen(),
-  // '/request': (context) => const RequestScreen(),
-  // '/requestList': (context) => const RequestListScreen(),
-  // '/request-detail': (context) {
-  //   final requestId = ModalRoute.of(context)!.settings.arguments as String;
-  //   return RequestDetailScreen(requestId: requestId);
   },
 
   '/driver-home': (settings) {
@@ -78,15 +64,6 @@ final Map<String, RouteFactory> appRoutes = {
     );
   },
   '/tracking': (_) => MaterialPageRoute(builder: (_) => const TrackingListScreen()),
-
-  // '/tracking-detail': (settings) {
-  //   final args = settings.arguments;
-  //   if (args is! String) {
-  //     return _errorRoute('배송 ID가 없습니다.');
-  //   }
-  //   return MaterialPageRoute(builder: (_) => TrackingScreen(requestId: args));
-  // },
-
   '/driver/requests': (_) => MaterialPageRoute(builder: (_) => const DriverRequestListPage()),
 
   '/driver/request-detail': (settings) {
