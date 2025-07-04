@@ -27,7 +27,6 @@ class AuthService {
       final snapshot = await userRef.get();
 
       if (!snapshot.exists) {
-        // 🔰 최초 로그인 시 balance = 0 포함
         await userRef.set({
           'uid': user.uid,
           'email': user.email,
@@ -37,7 +36,6 @@ class AuthService {
           'balance': 0,
         });
       } else {
-        // 🔁 기존 유저는 balance는 유지하고 나머지 정보만 merge
         await userRef.set({
           'uid': user.uid,
           'email': user.email,

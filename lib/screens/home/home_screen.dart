@@ -12,7 +12,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        SystemNavigator.pop(); // 뒤로가기 누르면 앱 종료
+        SystemNavigator.pop();
         return false;
       },
       child: Scaffold(
@@ -82,7 +82,6 @@ class HomeScreen extends StatelessWidget {
                 },
               ),
 
-              /// 📦 기능 버튼 그리드
               Expanded(
                 child: GridView.count(
                   crossAxisCount: 2,

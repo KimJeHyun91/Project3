@@ -12,8 +12,6 @@ class PaymentTestScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('테스트 결제'),
       ),
-
-      // 웹뷰 로딩 중 보여줄 화면
       initialChild: const Center(
         child: Text(
           '잠시만 기다려주세요...',
@@ -21,10 +19,8 @@ class PaymentTestScreen extends StatelessWidget {
         ),
       ),
 
-      // [필수] PortOne 가맹점 식별코드
       userCode: 'imp19424728',
 
-      // [필수] 결제 데이터
       data: PaymentData(
         pg: 'html5_inicis', // 테스트 PG사
         payMethod: 'card', // 결제수단
@@ -40,7 +36,6 @@ class PaymentTestScreen extends StatelessWidget {
         cardQuota: [2, 3], // UI 내 할부 옵션 제한
       ),
 
-      // [필수] 결제 완료 후 콜백
       callback: (Map<String, String> result) {
         if (result['imp_success'] == 'true') {
           print('✅ 결제 성공: ${result['imp_uid']}');
