@@ -45,7 +45,6 @@ class DriverHomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// 💰 사용자 인삿말 + 잔액 박스
               StreamBuilder<DocumentSnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('users')
@@ -87,7 +86,6 @@ class DriverHomeScreen extends StatelessWidget {
                 },
               ),
 
-              /// 📦 기능 버튼 그리드
               Expanded(
                 child: GridView.count(
                   crossAxisCount: 2,

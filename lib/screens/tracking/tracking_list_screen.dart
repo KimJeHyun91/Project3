@@ -47,14 +47,6 @@ class TrackingListScreen extends StatelessWidget {
                 title: Text('$pickup → $delivery'),
                 subtitle: Text('상태: ${data['status']}'),
                 trailing: const Icon(Icons.arrow_forward_ios),
-                // onTap: () {
-                //   Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //       builder: (_) => TrackingScreen(requestId: doc.id),
-                //     ),
-                //   );
-                // },
                 onTap: () async {
                   final doc = docs[index];
                   final data = doc.data() as Map<String, dynamic>;

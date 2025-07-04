@@ -20,7 +20,6 @@ class PaymentScreen extends StatelessWidget {
             ),
             const SizedBox(height: 32),
 
-            // 카드 결제 테스트 (결제 테스트 페이지로 이동)
             ElevatedButton.icon(
               onPressed: () => _showAmountDialog(context, useFirebase: false),
               icon: const Icon(Icons.account_balance_wallet),
@@ -36,7 +35,6 @@ class PaymentScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // 🔹 Firebase에 직접 충전 기록
             ElevatedButton.icon(
               onPressed: () => _showAmountDialog(context, useFirebase: true),
               icon: const Icon(Icons.flash_on),
@@ -52,7 +50,6 @@ class PaymentScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // 계좌 이체
             ElevatedButton.icon(
               onPressed: () => Navigator.pushNamed(context, '/payment-transfer'),
               icon: const Icon(Icons.account_balance),
@@ -98,10 +95,9 @@ class PaymentScreen extends StatelessWidget {
               final int? amount = int.tryParse(amountText);
 
               if (amount != null && amount > 0) {
-                Navigator.pop(context); // 먼저 AlertDialog 닫기
+                Navigator.pop(context);
 
                 if (useFirebase) {
-                  // 🔹 Firestore에 balance 충전
                   final user = FirebaseAuth.instance.currentUser;
                   if (user == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -128,7 +124,6 @@ class PaymentScreen extends StatelessWidget {
                     );
                   }
                 } else {
-                  // 🔸 결제 테스트 페이지로 이동
                   Navigator.pushNamed(
                     context,
                     '/payment-test',

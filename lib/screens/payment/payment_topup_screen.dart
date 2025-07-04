@@ -30,7 +30,6 @@ class _PaymentTopUpScreenState extends State<PaymentTopUpScreen> {
     }
 
     try {
-      // 🔹 Firestore에 잔액 누적 저장
       await FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
@@ -42,8 +41,6 @@ class _PaymentTopUpScreenState extends State<PaymentTopUpScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('₩$amount 충전이 완료되었습니다.')),
       );
-
-      // 🔸 충전 후 결제 테스트 페이지로 이동
       Navigator.pushReplacementNamed(context, '/payment-test');
 
     } catch (e) {

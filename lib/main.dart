@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
 
         final routeBuilder = appRoutes[settings.name];
         if (routeBuilder != null) {
-          return routeBuilder(settings); // 👈 핵심
+          return routeBuilder(settings);
         }
 
         return MaterialPageRoute(

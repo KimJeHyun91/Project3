@@ -1,13 +1,11 @@
-// lib/models/order_model.dart
-
 class Order {
   final String id;
   final String senderId;
   final String pickupAddress;
   final String deliveryAddress;
-  final String itemCategory; // 품목 (이사짐, 공산품 등)
+  final String itemCategory;
   final double weight;
-  final String size; // 가로x세로x높이 형태
+  final String size;
   final List<String> specialConditions;
   final String vehicleType;
   final DateTime desiredPickupTime;

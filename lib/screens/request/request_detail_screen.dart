@@ -151,12 +151,10 @@ class RequestDetailScreen extends StatelessWidget {
                           throw Exception('잔액이 부족합니다.');
                         }
 
-                        // 🔻 balance 차감
                         transaction.update(userRef, {
                           'balance': currentBalance - assignedPrice,
                         });
 
-                        // 🔸 배차 확정
                         transaction.update(
                           FirebaseFirestore.instance.collection('delivery_requests').doc(requestId),
                           {
